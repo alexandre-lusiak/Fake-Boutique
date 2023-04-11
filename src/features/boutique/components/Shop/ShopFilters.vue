@@ -7,7 +7,6 @@ const props = defineProps<{
     numberOfProduct :number
 }>()
 
-console.log(props);
 
 const emit = defineEmits<{
     (e: 'updateFilter', filterUpdate: IFilterUpdate): void

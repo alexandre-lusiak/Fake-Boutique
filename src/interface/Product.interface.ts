@@ -1,7 +1,7 @@
-import type { Category } from "./Filters.interface";
+import type { Category } from "./type";
 
 export interface Iproduct {
-    id:number
+    _id:string
     title: string;
     price:number
     description : string

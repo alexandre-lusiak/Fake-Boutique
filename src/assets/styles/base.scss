@@ -1,3 +1,4 @@
+@use './mixin.scss';
 :root{
 
   --primary1: #3498db;
@@ -45,7 +46,7 @@ a{
 }
 
 body{
-  min-height: 100vh;
+  height: 100vh;
   font-family: var(--font-family);
   margin: 0;
   padding: 0;
@@ -53,10 +54,20 @@ body{
   background-color: var(--gray-1);
 }
 
-input {
+input ,textarea,select{
   border: var(--border);
   border-radius: var(--border-radius);
   padding: 5px 10px;
+}
+label {
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.form-error{
+  color:var(--danger1);
+  font-size:14px;
+  font-weight:'bold'
 }
 
 // class utilitaire
@@ -174,3 +185,26 @@ transition :background-color 0.2s;
     background-color: var(--danger2);
   }
 }
+
+.btn-success {
+  background-color: var(--sucess1);
+  &:hover{
+    background-color: var(--sucess2);
+  }
+}
+
+.card {
+  border: var(--border);
+  border-radius: var(var(--border-radius));
+  background-color: white;
+  padding: 30px;
+}
+
+
+.hide-xs{
+   @include mixin.xs {
+        display: none !important;
+   }
+ 
+}
+

@@ -7,7 +7,7 @@ defineProps<{
 }>()
 
 const emit = defineEmits<{
-  (e: 'addProductToCart', productId: number): void;
+  (e: 'addProductToCart', productId: string): void;
 }>();
 
 </script>
@@ -18,9 +18,9 @@ const emit = defineEmits<{
         <div class="p-10 d-flex flex-col">
             <h4>{{ product.title }}</h4>
           <p>{{ product.description }}</p>
-            <div class="d-flex flex-row align-items-center">
-                <span class="flex-fill">{{ product.price }}</span>
-                <button class="btn btn-primary"  @click="emit('addProductToCart', product.id)">Ajouter au panier</button>
+            <div class="d-flex flex-row align-items-center ">
+                <span class="flex-fill"> <strong>Prix:</strong> {{ product.price }} Eur</span>
+                <button class="btn btn-primary"  @click="emit('addProductToCart', product._id)">Ajouter au panier</button>
             </div>
         </div>
 
@@ -35,7 +35,7 @@ const emit = defineEmits<{
     &-image{
         border-top-right-radius: var(--border-radius);
         border-top-left-radius: var(--border-radius);
-        background-image: url('../../assets/images/raw.png');
+        background-image: url('../../../../assets/images/raw.png');
         height: 200px;
         background-size: cover;
         background-position: center;

@@ -8,7 +8,7 @@ defineProps<{
 }>();
 
 const emit = defineEmits<{
-    (e:'removeProductFromCart', productId:number)  :void
+    (e:'removeProductFromCart', productId:string)  :void
 }>()
 </script>
 
@@ -17,7 +17,7 @@ const emit = defineEmits<{
         <strong class="flex-fill">{{ product?.title }}</strong>
         <span class="mr-10  ">x {{product?.quantity}}</span>
         <span class="mr-10 ">{{product?.price}}€</span>
-        <button class="btn btn-danger" @click="emit('removeProductFromCart',product?.id)"> retirer</button>
+        <button class="btn btn-danger" @click="emit('removeProductFromCart',product?._id)"> retirer</button>
     </div>
 </template>
 
