@@ -2,6 +2,7 @@
 import type { IProductCart } from '@/interface';
 import { Teleport, computed, reactive } from 'vue';
 import CartProductList from './CartProductList.vue';
+import Calc from '@/components/Calc.vue';
 
 const state = reactive<{
     open:boolean
@@ -30,10 +31,8 @@ const totalPrice = computed(() => props.cart.reduce((prev,product) => {
                 <i class="fa-solid fa-basket-shopping "></i>
             </div>
             <div v-else>
-                <Teleport to="body">
-                    <div @click="state.open = false" class="calc"></div>
-                </Teleport>
-               <div class="p-20 d-flex flex-col cart ">
+             <Calc :open="true" @close="state.open = false"/>
+               <div class="p-20 d-flex flex-col cart">
                     <h2 class="mb-10">Panier</h2>
                     <CartProductList  
                     class="flex-fill"
@@ -80,6 +79,7 @@ const totalPrice = computed(() => props.cart.reduce((prev,product) => {
 .cart{
     background-color: white;
     border-radius: 5%;
+    margin: auto;
 }
 .tag{
     width: 15px;

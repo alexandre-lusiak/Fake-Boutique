@@ -1,20 +1,13 @@
 <script setup lang="ts">
 import type { Page } from '@/interface';
 import { Transition, reactive } from 'vue';
+import Calc from './Calc.vue';
 
 const state = reactive<{
     open:boolean
 }>({
     open:false
 })
-
- defineProps<{
-    page:Page
-}>()
-
-const emit = defineEmits<{
-    (e:'navigate',page:Page) : void
-}>()
 
 </script>
 
@@ -28,10 +21,10 @@ const emit = defineEmits<{
         <div class="d-flex flex-row flex-fill actions-container">
             <ul class="d-flex flex-row flex-fill  hide-xs">
                 <li class="mr-10">
-                    <a :class="{'active':page === 'Boutique'}" @click="emit('navigate','Boutique')" href="#">Boutique</a>
+                    <router-link to="/boutique" href="#">Boutique</router-link>
                 </li>
                 <li>
-                    <a :class="{'active':page === 'Admin'}" @click="emit('navigate','Admin')" href="#">Admin</a>
+                    <router-link to="/admin"  href="#">Admin</router-link>
                 </li>
             </ul>
             <ul class="d-flex flex-row hide-xs ">
@@ -43,22 +36,22 @@ const emit = defineEmits<{
                 </li>
             </ul>
             <div class="menu-xs-container">
+                <Calc :open="state.open" @close="state.open=false"  :transparent="true"/>
                 <i @click="state.open=!state.open" class="fa-solid fa-bars"></i>
                 <Transition > <ul v-if="state.open" class="menu cart" >
-                <li>
-                    <a :class="{'active':page === 'Boutique'}" @click="emit('navigate','Boutique')" href="#">Boutique</a>
+                <li class="mr-10">
+                    <router-link to="/boutique" href="#">Boutique</router-link>
                 </li>
                 <li>
-                    <a :class="{'active':page === 'Admin'}" @click="emit('navigate','Admin')" href="#">Admin</a>
+                    <router-link to="/admin"  href="#">Admin</router-link>
                 </li>
-                <li >
+                <li>
                     <a href="#">Inscription</a>
                 </li>
                 <li>
                     <a href="#">Connexion</a>
                 </li>
                 </ul></Transition>
-               
             </div>
         </div>
         
@@ -93,7 +86,7 @@ header{
             display: none;
         }
     }
-    a.active {
+    .router-link-active {
         text-decoration: underline;
     }
    
@@ -120,6 +113,7 @@ header{
         font-size: 16px;
         padding: 3px;
         margin: 0;
+        z-index: 2;
         li {
             padding: 10px;
         }

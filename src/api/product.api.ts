@@ -1,6 +1,9 @@
 
-import type { IFilters ,Iproduct} from "@/interface/";
+import type { IFilters ,IFormProduct,Iproduct} from "@/interface/";
+import { ref, type Ref } from "vue";
+import { boolean } from "zod";
 
+const BASE_URL = "https://restapi.fr/api/products"
 export async function  fetchProducts(filters:IFilters,page :number):Promise <any >{
     
     const  q = new URLSearchParams();
@@ -18,9 +21,81 @@ export async function  fetchProducts(filters:IFilters,page :number):Promise <any
         `{"$gte":${filters.priceRange[0]}, "$lte":${filters.priceRange[1]}}`
       );
 
-    const products = await( await fetch(`https://restapi.fr/api/products?${q}`)).json()
+    const products = await( await fetch(`${BASE_URL}?${q}`)).json()
     return products
 }
 
 
+
+export function useFetchProducts(): {
+  products: Ref<Iproduct[] | null>;
+  loading: Ref<boolean>;
+  error: Ref<any>;
+} {
+  const products = ref<Iproduct[] | null>(null);
+  const loading = ref<boolean>(true);
+  const error = ref<any>(null);
+
+  (async () => {
+    try {
+      products.value = await (await fetch(BASE_URL)).json();
+    } catch (e) {
+      error.value = e;
+    } finally {
+      loading.value = false;
+    }
+  })();
+
+  return {
+    products,
+    loading,
+    error,
+  };
+}
+
+
+export  async function  deleteProduct(id:string): Promise<string> {
+          await  fetch(`${BASE_URL}/${id}`, {
+                method:'DELETE'
+            })
+    return id;
+}
+
+
+export async function addProduct(product:IFormProduct):Promise<Iproduct> {
   
+    const newProduct = await( await fetch('https://restapi.fr/api/products', {
+            method:'POST',
+            body:JSON.stringify(product),
+            headers:{
+                'Content-Type':'application/json'
+            }
+        })).json()
+       
+        return newProduct
+} 
+
+
+export  async function  getProduct(id:string): Promise<Iproduct> {
+ const product = await (await fetch(`${BASE_URL}/${id}`)).json();
+return product;
+}
+    
+
+export async function editProduct(
+    product: IFormProduct,
+    id: string
+): Promise<IFormProduct> {
+    console.log(id);
+    
+    const updatedProduct = await (
+        await fetch(`${BASE_URL}/${id}`, {
+            method: 'PATCH',
+            body: JSON.stringify(product),
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+    ).json();
+    return updatedProduct;
+}  

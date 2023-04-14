@@ -37,7 +37,7 @@ const scrolablediv = ref<HTMLElement | null>(null)
       :key="product._id"
     />
 </div>
-    <div v-if="moreResult" class="d-flex flex-row aligns-items-content justify-content-center">
+    <div v-if="moreResult && products.length" class="d-flex flex-row aligns-items-content justify-content-center">
       <button class="btn btn-primary" @click="emit('incPage')">Plus de resultat</button>
     </div>
   

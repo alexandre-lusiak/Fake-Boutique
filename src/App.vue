@@ -9,34 +9,22 @@ import type { Page } from './interface';
 import { seed40articles } from './components/data/seed';
 
 
-const state = reactive<{
-    page:Page
 
-}>({
-    page:'Boutique'
-})
-
-const pages:{[s:string]:any } = {
-Boutique,
-Admin
-}
-
-
-function navigate (page:Page) :void {
-    state.page = page
-}
 </script>
 
 <template>
     <div class="app-container" >
-        <TheHeader @navigate="navigate" :page="state.page" class="header "/>
+        <TheHeader  class="header "/>
         <div class="content">
-        <Suspense>
-           <Component :is="pages[state.page]"/> 
-        </Suspense>
-    </div>
-      
-        <TheFooter  class="footer "/>
+            <router-view v-slot="{Component}">
+                <template v-if="Component">
+                    <Suspense>
+                       <Component :is="Component"/> 
+                    </Suspense>
+                </template>
+            </router-view>
+        </div>
+        <TheFooter  class="footer hide-xs "/>
     </div>
 </template>
 

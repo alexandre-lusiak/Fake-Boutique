@@ -3,10 +3,37 @@ import z from 'zod'
 import {useForm ,useField} from 'vee-validate'
 import {toFormValidator} from '@vee-validate/zod'
 import { onMounted, ref, type Text } from 'vue';
+import { addProduct, editProduct, getProduct } from '@/api/product.api';
+import type { IFormProduct, Iproduct } from '@/interface';
+import { useRoute, useRouter } from 'vue-router';
 
 const firstInput = ref<HTMLInputElement| null>(null)
+const product = ref<Iproduct | null>(null)
+const route = useRoute()
+const router = useRouter()
 
+if(route.params.id){
+    product.value = await getProduct(route.params.id as string)
+}else{
+
+}
 const required = {required_error:'Champ obligatoire'}
+
+const initialValues = {
+    title: product.value ? product.value.title : '' ,
+    price: product.value ? product.value.price : 0,
+    description : product.value ? product.value.description : '' ,
+    category: product.value ? product.value?.category : 'desktop',
+    image : product.value ? product.value.image : '' ,
+
+    
+}
+onMounted(() => {
+    firstInput.value?.focus
+})
+
+
+
 const validationSchema = toFormValidator(
     z.object({
         title: z.string(required).min(3,{message:'titre trop court'}).max(20,{message:'titre trop long'}),
@@ -18,24 +45,25 @@ const validationSchema = toFormValidator(
 )
 
 const {handleSubmit,isSubmitting} = useForm({
-    validationSchema
+    validationSchema,
+    initialValues
+  
 })
 
-onMounted(() => {
-    firstInput.value?.focus
-})
+
 
 const onSubmit =  handleSubmit(async(formValues , {resetForm}) => {
         try {
-            await fetch('https://restapi.fr/api/project-product', {
-                method:'POST',
-                body:JSON.stringify(formValues),
-                headers:{
-                    'Content-Type':'application/json'
-                }
-            })
-            resetForm()
+            if(!product.value){
+                await   addProduct(formValues as IFormProduct)
+                resetForm()
+            }else{
+              await  editProduct(formValues ,product.value._id)
+                router.push('/admin/productlist')
+            }
+            
         } catch (error) {
+            console.log(error);
             
         }
     
@@ -51,7 +79,7 @@ const category = useField('category')
 
 <template>
  <div class="card" >
-    <h1>Ajouter un Article </h1>
+    <h1>{{ product ?'Editer': "Ajouter"}}  un Article  </h1>
     <form @submit="onSubmit">
             <div class="d-flex flex-col mb-20">
                 <label class="mb-5">*Titre</label>

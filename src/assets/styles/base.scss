@@ -115,6 +115,9 @@ label {
   margin:10px;
 }
 
+.mt-20{
+  margin-top: 20px;
+}
 .m-20 {
   margin:20px
 }
@@ -132,10 +135,16 @@ label {
 }
 
 .mb-20 {
+  margin-bottom:20px
+}
+
+.mb-10 {
   margin-bottom:10px
 }
 
-
+.ml-20{
+margin-left: 20px;
+}
 .mr-10 {
   margin-right:10px
 }
@@ -208,3 +217,7 @@ transition :background-color 0.2s;
  
 }
 
+
+.router-link-active {
+  text-decoration: underline;
+}
