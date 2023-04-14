@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-import type { IFilters, IFilterUpdate, Iproduct } from '@/interface';
+import type { IFilters, IFilterUpdate, Iproduct } from '@/shared/interface'
 import ShopFilters from './ShopFilters.vue';
 import ShopProductList from './ShopProductList.vue';
 import { reactive, Transition } from 'vue';
@@ -10,6 +10,7 @@ defineProps<{
     products: Iproduct[]
     filters: IFilters
     moreResult:boolean
+    page:number
     
 }>()
 
@@ -53,6 +54,7 @@ const state = reactive<{
                 @inc-page="emit('incPage')"
                 :products="products"
                 :more-result="moreResult "
+                :page="page"
         />
          </div>
     </div>

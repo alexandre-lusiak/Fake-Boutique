@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Category, IFilters,IFilterUpdate } from '@/interface';
+import type { Category, IFilters,IFilterUpdate } from '@/shared/interface'
 
 
 const props = defineProps<{
@@ -27,7 +27,7 @@ const emit = defineEmits<{
 
             <div class="mb-5"
                 v-for="priceRange of ([[0, 10000], [800, 1000], [1000, 1500], [1500, 2000], [2000, 10000]] as [number, number][])">
-                <input @input="emit('updateFilter', { priceRange })" name="priceRange" :id="priceRange[0].toString()"
+                <input  :checked="filters.priceRange[0] === priceRange[0]" @input="emit('updateFilter', { priceRange })" name="priceRange" :id="priceRange[0].toString()"
                     type="radio" />
                 <label :for="priceRange[0].toString()">{{
                     priceRange[0] === 0

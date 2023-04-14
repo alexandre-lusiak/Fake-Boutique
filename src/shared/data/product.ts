@@ -1,4 +1,4 @@
-import type { Iproduct } from "@/interface";
+
 
 export const data =  [
     {title:'Macbook',description:'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore',price:1500, category:'gamer'},

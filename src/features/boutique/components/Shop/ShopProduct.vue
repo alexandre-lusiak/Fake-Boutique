@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Iproduct } from '@/interface';
+import type { Iproduct } from '@/shared/interface'
 
 
 defineProps<{

@@ -1,131 +1,59 @@
 <script setup lang="ts">
 import Shop from './components/Shop/Shop.vue';
 import Cart from './components/Cart/Cart.vue';
-import { computed, provide, reactive, toRef, watch, watchEffect } from 'vue';
-import { data } from '../../components/data/product';
-import type { IProductCart,Iproduct, IFilters ,IFilterUpdate} from '../../interface'
-import { DEFAULT_FILTERS } from '../../components/data/filters';
-import { fetchProducts } from '@/api/product.api';
-import { pageKey } from '@/key/pageKey';
+import type {IFilterUpdate} from '../../shared/interface'
+import { useProduct } from './store/productstore';
+import { useCart } from './store/cartStore';
 
+const cartStore = useCart()
+const productStore = useProduct()
+// productStore.seed()
+function updateFilter(filterUpdate:IFilterUpdate) {
+  productStore.updateFilter(filterUpdate)
+}
 
-const state = reactive<{
- products: Iproduct[] ,
- cart:IProductCart[],
- filters: IFilters,
- page:number,
- isloading:boolean,
- moreResult : boolean
+function incPage() {
+  productStore.incPage()
+}
+function addProductToCart(productId:string) {
+  cartStore.addProductToCart(productId)
+}
 
-}>({
-    products:[],
-    cart:[],
-    filters: {...DEFAULT_FILTERS},
-    page:1,
-    isloading:true,
-    moreResult:true
+function removeProductFromCart(productId:string) {
+  cartStore.removeProductFromCart(productId)
+}
+productStore.$onAction(({name , after,args}) => {
+  if(name ==="updateFilter" && args[0].search === undefined){
+      after(() => {
+      productStore.page = 1; 
+      productStore.products =[];
+      productStore.moreResult =true;
+      productStore.fetchProducts()
+      })
+  }else if (name==='incPage' ){
+    after(() => {
+      productStore.fetchProducts()
+    })
+  }
 })
 
-watch(state.filters , () => {
-  state.page=1
-  state.products=[]
-} )
-
-provide(pageKey,toRef(state,'page'))
-
-watchEffect(async () => { 
-  state.isloading = true
-  const products = await fetchProducts(state.filters,state.page);
-  console.log('porrr',products);
-  
-  if(Array.isArray(products)) {
-    state.products = [...state.products,...products]
-    if(products.length < 20 ){
-        state.moreResult = false;
-    }
-  }else{
-    state.products =  [...products,products]
-  }
-  state.isloading =false
-})
-
-
-
-const filteredProducts = computed(() => {
-    
-  return state.products.filter((product) => {
- 
-    
-    if (
-      product.title
-        .toLocaleLowerCase()
-        .startsWith(state.filters.search.toLocaleLowerCase()) 
-    ) {
-      return product;
-    } else {
-      return false;
-    }
-  });
-});
-
-
-function addProductToCart(productId: string): void {
-  const product = state.products.find((product) => product._id === productId);
-  if(product){
-    const productCart = state.cart.find(product => product._id === productId)
-    if(productCart){
-        productCart.quantity++
-    }else{
-        state.cart.push({ ...product,quantity: 1});
-    }
-  }
-//   if (product && !state.cart.find((product) => product.id === productId)) {
-//     state.cart.push({ ...product,quantity: 1});
-//   }
-}
-
-function removeProductFromCart(productId: string): void {
-    const productFromCart = state.cart.find(product => product._id === productId )
-  if(productFromCart ) {
-    if(productFromCart.quantity === 1 ){
-        state.cart = state.cart.filter((w) => w._id != productId)
-    }else{
-        productFromCart.quantity--
-    }
-  }
-}
-
-const updateFilter = (filterUpdate:IFilterUpdate) => {
-    
-    if(filterUpdate.search != undefined) {
-        state.filters.search = filterUpdate.search;
-    } else if(filterUpdate.priceRange) {
-        state.filters.priceRange = filterUpdate.priceRange
-    } else if (filterUpdate.category){
-        state.filters.category = filterUpdate.category
-    }else{
-        state.filters={...DEFAULT_FILTERS}
-    }
-
-}
-
-const cartEmpty = computed(() => state.cart.length === 0);
 </script>
 
 <template>
     <div class="d-flex flex-col">
         
       <Shop
-      @inc-page="state.page++"
+      @inc-page="incPage"
       @update-filter="updateFilter"
-      :products="filteredProducts"
-      :filters="state.filters"
+      :products="productStore.filteredProducts"
+      :filters="productStore.filters"
       @add-product-to-cart="addProductToCart"
-      :more-result="state.moreResult"
+      :more-result="productStore.moreResult"
+      :page="productStore.page"
     />
     <Cart
-      v-if="!cartEmpty"
-      :cart="state.cart"
+      v-if="cartStore.cartEmpty"
+      :cart="cartStore.cart"
       @remove-product-from-cart="removeProductFromCart"
     />
         

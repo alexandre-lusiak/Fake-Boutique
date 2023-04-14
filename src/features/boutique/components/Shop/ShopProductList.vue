@@ -1,24 +1,23 @@
 <script setup lang="ts">
-import type { Iproduct } from '@/interface';
 import ShopProduct from './ShopProduct.vue';
 import { inject, onUpdated, ref, watch } from 'vue';
-import { pageKey } from '@/key/pageKey';
+import type { Iproduct } from '@/shared/interface';
 
 const props = defineProps<{
   products: Iproduct[];
   moreResult:boolean
+  page:number
 }>();
 
 const emit = defineEmits<{
   (e: 'addProductToCart', productId: string): void;
   (e:'incPage'):void
 }>();
-const page = inject(pageKey)!;
 
-console.log('page',page.value);
 
-watch(page,() => {
-  if(page.value === 1){
+
+watch(() => props.page,() => {
+  if(props.page === 1){
     scrolablediv.value?.scrollTo(0,0)
   }
 })

@@ -5,16 +5,18 @@ import  Boutique from './features/boutique/Boutique.vue';
 import TheFooter from './components/Footer.vue';
 import  Admin from './features/admin/Admin.vue'
 import { reactive } from 'vue';
-import type { Page } from './interface';
-import { seed40articles } from './components/data/seed';
+import { seed40articles } from './shared/data/seed';
 
 
+function logout(){
+    
+}
 
 </script>
 
 <template>
     <div class="app-container" >
-        <TheHeader  class="header "/>
+        <TheHeader :isLoggedIn="false" @logout="logout" is  class="header "/>
         <div class="content">
             <router-view v-slot="{Component}">
                 <template v-if="Component">

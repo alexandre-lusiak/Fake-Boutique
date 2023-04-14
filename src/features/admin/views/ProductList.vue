@@ -1,12 +1,13 @@
 <script setup lang="ts">
-import { deleteProduct, useFetchProducts } from '@/api/product.api';
+import { deleteProduct, useFetchProducts } from '@/shared/api/product.api';
+import {useAdminProducts} from '../store/adminStore'
+
+const adminProductStore = useAdminProducts()
 
 
-const {products,loading,error} = useFetchProducts();
 
-async function tryDeleteProduct ( id:string) {
-   await deleteProduct(id)
-   products.value= products.value!.filter((p) => p._id !== id )
+ function tryDeleteProduct ( id:string) {
+    adminProductStore.deleteProduct(id);
 }
 
 </script>
@@ -14,12 +15,11 @@ async function tryDeleteProduct ( id:string) {
 <template>
     <div class="container card">
     <h1 class="mb-20"> Liste des produits</h1>
-    <h3 v-if="error">OUPS une erreur sauvage est apparue !</h3>
-    <h3 v-else-if="loading"> Chargement...</h3>
+    <h3 v-if="adminProductStore.loading"> Chargement...</h3>
     <ul v-else>
       <li
         class="d-flex flex-row align-items-center"
-        v-for="product of products"
+        v-for="product of adminProductStore.products"
         :key="product._id"
       >
         <span class="flex-fill">{{ product.title }}</span>

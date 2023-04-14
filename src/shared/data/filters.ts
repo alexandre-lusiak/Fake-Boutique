@@ -1,4 +1,4 @@
-import type { IFilters } from "@/interface";
+import type { IFilters } from "../interface";
 
 export const DEFAULT_FILTERS: IFilters = {
     search : '',

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { IProductCart} from '@/interface';
+import type { IProductCart} from'@/shared/interface';
 
 
 

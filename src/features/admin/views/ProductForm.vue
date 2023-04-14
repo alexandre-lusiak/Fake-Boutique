@@ -3,14 +3,18 @@ import z from 'zod'
 import {useForm ,useField} from 'vee-validate'
 import {toFormValidator} from '@vee-validate/zod'
 import { onMounted, ref, type Text } from 'vue';
-import { addProduct, editProduct, getProduct } from '@/api/product.api';
-import type { IFormProduct, Iproduct } from '@/interface';
+
 import { useRoute, useRouter } from 'vue-router';
+import { addProduct, editProduct, getProduct } from '@/shared/api/product.api';
+import type { IFormProduct, Iproduct } from '@/shared/interface';
+import { useAdminProducts } from '../store/adminStore';
 
 const firstInput = ref<HTMLInputElement| null>(null)
 const product = ref<Iproduct | null>(null)
 const route = useRoute()
 const router = useRouter()
+const adminProductStore = useAdminProducts();
+
 
 if(route.params.id){
     product.value = await getProduct(route.params.id as string)
@@ -23,10 +27,8 @@ const initialValues = {
     title: product.value ? product.value.title : '' ,
     price: product.value ? product.value.price : 0,
     description : product.value ? product.value.description : '' ,
-    category: product.value ? product.value?.category : 'desktop',
+    category: product.value ? product.value.category : 'desktop',
     image : product.value ? product.value.image : '' ,
-
-    
 }
 onMounted(() => {
     firstInput.value?.focus
@@ -53,19 +55,16 @@ const {handleSubmit,isSubmitting} = useForm({
 
 
 const onSubmit =  handleSubmit(async(formValues , {resetForm}) => {
-        try {
-            if(!product.value){
-                await   addProduct(formValues as IFormProduct)
-                resetForm()
-            }else{
-              await  editProduct(formValues ,product.value._id)
-                router.push('/admin/productlist')
-            }
-            
-        } catch (error) {
-            console.log(error);
-            
+    try {
+        if (!product.value) {
+            await adminProductStore.createProduct(formValues);
+        } else {
+            await adminProductStore.editProduct(product.value._id, formValues);
         }
+        router.push('/admin/productlist');
+    } catch (e) {
+        console.log(e);
+    }
     
 })
 
